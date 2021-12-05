@@ -1,4 +1,5 @@
 #include <server.hpp>
+#include "image_converter.hpp"
 
 cv::Mat server::recieve_image()
 {
@@ -22,13 +23,13 @@ cv::Mat server::recieve_image()
     {
         while(readImgSize >= 256)
         {
-            read(socket, memBlock, 256);
+            read(new_socket, memBlock, 256);
             fp.write(memBlock, 256);
 
             readImgSize -= 256;   
         }
 
-        read(socket, memBlock, readImgSize);
+        read(new_socket, memBlock, readImgSize);
         fp.write(memBlock, readImgSize);
         fp.close();
         //@TODO: Close socket connection in both client and server.
@@ -36,14 +37,18 @@ cv::Mat server::recieve_image()
 
     cv::Mat rcvImage = imread("server_rcvImg.png", cv::IMREAD_UNCHANGED);
 
-    return rcvImage;
+    //Take GrayScale/ Perform Operation
+    cv::Mat greyImage = convertors::convert_to_grayscale(rcvImage);
+    cv::imwrite("server_grascale.png", greyImage);
+    //Send Image
+    return greyImage;
 }
 
 void server::run()
 {
     std::cout << "MainServer: Main server started" << std::endl; 
     int opt = 1; 
-    int addrlen = sizeof(address); 
+    addrlen = sizeof(address); 
 
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 

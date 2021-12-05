@@ -23,6 +23,7 @@ class server
 
     private:
         struct sockaddr_in address;
-        int server_fd;
+        int server_fd, new_socket;
+        int addrlen;
 
-}
+};
