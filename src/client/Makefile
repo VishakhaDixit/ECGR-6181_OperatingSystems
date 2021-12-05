@@ -12,7 +12,7 @@ OPENCV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopen
 LIBS = -lpthread
 
 OUTPUT_DIR = ../../build
-OBJECT_DIR = $(OUTPUT_DIR)/obj
+OBJECT_DIR = $(OUTPUT_DIR)/$(TARGET)/obj
 
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
@@ -33,13 +33,16 @@ execfile: $(TARGET).$(EXT)
 bin: $(TARGET).$(EXT)
 
 %.o: %.cpp
+	@if [ ! -d $(OUTPUT_DIR) ];then mkdir $(OUTPUT_DIR);fi
+	@if [ ! -d $(OUTPUT_DIR)/$(TARGET) ];then mkdir $(OUTPUT_DIR)/$(TARGET);fi
 	@if [ ! -d $(OBJECT_DIR) ];then mkdir $(OBJECT_DIR);fi
 	$(CC) $< $(CFLAGS) -o $(OBJECT_DIR)/$@
 
 
 $(TARGET).$(EXT): $(OBJ)
-	$(CC) $(OBJECT_DIR)/client.o $(OBJECT_DIR)/main.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
+	$(CC) $(OBJECT_DIR)/*.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
 
 
 clean: 
-	rm -rf $(OUTPUT_DIR)/*
+	rm -rf $(OUTPUT_DIR)/$(TARGET)
+	rm -f $(OUTPUT_DIR)/$(TARGET).$(EXT)
