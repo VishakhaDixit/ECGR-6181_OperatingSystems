@@ -20,7 +20,7 @@ EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 SRC = client.cpp main.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
-LDFLAGS = $(LIBS) $(OPENCV_LIBS) -Wall -lstdc++fs
+LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs
 
 CFLAGS += $(INC_PATH) -c
 
@@ -38,7 +38,7 @@ bin: $(TARGET).$(EXT)
 
 
 $(TARGET).$(EXT): $(OBJ)
-	$(CC) -L/usr/local/lib $(LDFLAGS) $(OBJECT_DIR)/client.o $(OBJECT_DIR)/main.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT)
+	$(CC) $(OBJECT_DIR)/client.o $(OBJECT_DIR)/main.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
 
 
 clean: 
