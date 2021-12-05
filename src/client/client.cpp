@@ -12,8 +12,6 @@
 
 #include "client.hpp"
 
-using namespace std;
-
 namespace client
 {
     void img_transmit(std::string path)
@@ -100,7 +98,6 @@ namespace client
     {
         int readImgSize;
         char *memBlock;
-        uint8_t remCapacity;
         ofstream fp;
 
         memBlock = new char[256];
@@ -113,14 +110,14 @@ namespace client
         {
             while(readImgSize >= 256)
             {
-                read(socket, &memBlock, 256);
-                fp.write(&memBlock, 256);
+                read(socket, memBlock, 256);
+                fp.write(memBlock, 256);
 
                 readImgSize -= 256;   
             }
 
-            read(socket, &memBlock, readImgSize);
-            fp.write(&memBlock, readImgSize);
+            read(socket, memBlock, readImgSize);
+            fp.write(memBlock, readImgSize);
             fp.close();
         }
 
