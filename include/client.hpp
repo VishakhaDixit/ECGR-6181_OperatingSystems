@@ -13,7 +13,7 @@ using namespace std;
 
 namespace client
 {
-    void img_transmit(string path);
+    void get_grayscale(string path);
 
     void send_image(int socket, string img);
 

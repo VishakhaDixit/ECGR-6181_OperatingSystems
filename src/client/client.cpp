@@ -14,7 +14,7 @@
 
 namespace client
 {
-    void img_transmit(std::string path)
+    void get_grayscale(std::string path)
     {
         int serverSocket = 0;
         struct sockaddr_in serverAddr;
@@ -39,7 +39,7 @@ namespace client
         if(connect(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
         {
             cout << "Connection Failed \n";
-            return;
+            return ;
         }
 
         send_image(serverSocket, IMG_PATH);
