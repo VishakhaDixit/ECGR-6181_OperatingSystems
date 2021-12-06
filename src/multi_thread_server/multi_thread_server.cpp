@@ -1,16 +1,16 @@
-#include "single_thread_server.hpp"
+#include "multi_thread_server.hpp"
 
-void singleThreadServer::run()
+void multiThreadServer::run()
 {
     create_server_sock();
 }
 
-void singleThreadServer::stop()
+void multiThreadServer::stop()
 {
     mThread.join();
 }
 
-void singleThreadServer::create_thread()
+void multiThreadServer::create_thread()
 {
      while(1)
     {

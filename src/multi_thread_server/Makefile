@@ -4,7 +4,7 @@ CC = g++
 CFLAGS   = -O0 -Wall -std=c++11
 INC_PATH = -I/usr/local/include/opencv4 -I../../include/
 EXT = out
-TARGET = single_thread_server
+TARGET = multi_thread_server
 
 OPENCV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d \
 			  -lopencv_calib3d -lopencv_objdetect -lopencv_flann -lopencv_imgcodecs -lopencv_videoio
@@ -18,7 +18,7 @@ COMMON_OBJ = $(OUTPUT_DIR)/common/obj
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
 # Source files and dependencies
-SRC = main.cpp single_thread_server.cpp
+SRC = main.cpp multi_thread_server.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
 LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs

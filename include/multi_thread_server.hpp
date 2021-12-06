@@ -1,10 +1,10 @@
 #include "server.hpp"
 
-class singleThreadServer : public server
+class multiThreadServer : public server
 {
     public:
-        singleThreadServer() = default;
-        ~singleThreadServer()  = default;
+        multiThreadServer() = default;
+        ~multiThreadServer()  = default;
 
         void run();
 
