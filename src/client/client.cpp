@@ -11,39 +11,41 @@
  **************************/
 
 #include "client.hpp"
+#include "base64.h"
 
 namespace client
 {
     void get_grayscale(std::string path)
     {
-        int serverSocket = 0;
+        int server = 0;
         struct sockaddr_in serverAddr;
 
-        serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+        server = socket(AF_INET, SOCK_STREAM, 0);
 
-        if(serverSocket < 0)
+        if(server < 0)
         {
             cout << "\n Socket Creation Failed \n";
             return;
         }
 
         serverAddr.sin_family = AF_INET;
+        serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
         serverAddr.sin_port = htons(PORT);
 
-        if(inet_pton(AF_INET, IP, &serverAddr.sin_addr) <= 0)
-        {
-            cout << "Address is not supported \n";
-            return;
-        }
+        // if(inet_pton(AF_INET, IP, &serverAddr.sin_addr) <= 0)
+        // {
+        //     cout << "Address is not supported \n";
+        //     return;
+        // }
 
-        if(connect(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+        if(connect(server, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
         {
             cout << "Connection Failed \n";
             return ;
         }
 
-        send_image(serverSocket, IMG_PATH);
-        cv::Mat grayImg = receive_image(serverSocket);
+        send_image(server, path);
+        cv::Mat grayImg = receive_image(server);
 
         // display_image(image);
         // display_image(grayImg);
@@ -51,47 +53,20 @@ namespace client
 
     void send_image(int socket, string img) 
     {
-        //open file
-        ifstream fp;
-        char *memBlock;
-        uint8_t remCapacity;
-        
-        memBlock = new char[256];
+        cv::Mat cvImg = cv::imread(img);
+        std::vector<unsigned char> buf;
+        cv::imencode(".png", cvImg, buf);
+        auto base64_png = reinterpret_cast<const unsigned char*>(buf.data());
+        std::string encode_png = base64_encode(base64_png, buf.size());
 
-        fp.open(img);
+        std::string message = std::to_string(encode_png.length()) + "\n" + encode_png;
+        send(socket, message.data(), message.length(), 0);
 
-        if(fp.is_open())
-        {
-            //calculate size
-            fp.seekg(0, ios_base::end);
-            int file_size = fp.tellg();
-            
-            //send size
-            send(socket, &file_size, sizeof(file_size), 0);
-
-            remCapacity = file_size;
-
-            fp.seekg(0, ios::beg);
-
-            while(remCapacity >= 256)
-            {
-                fp.read(memBlock, 256);
-
-                //send in 256 bytes chunks
-                send(socket, memBlock, 256, 0);
-
-                remCapacity -= 256;
-            }
-
-            //send remaining bytes of image 
-            fp.read(memBlock, remCapacity);
-            send(socket, memBlock, remCapacity, 0);
-
-            fp.close();
-        }
-        
-        // debugging symbols
+        // int file_size = cvImg.total() * cvImg.elemSize();
+        // cout<<"file size: "<<file_size<<std::endl;
+        // send(socket, &file_size , sizeof(file_size), 0);
         cout << "Image was sent" << std::endl;
+        close(socket);
     }
 
     cv::Mat receive_image(int socket) 

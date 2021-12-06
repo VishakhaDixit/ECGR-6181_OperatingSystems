@@ -17,7 +17,7 @@ OBJECT_DIR = $(OUTPUT_DIR)/$(TARGET)/obj
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
 # Source files and dependencies
-SRC = client.cpp main.cpp
+SRC = client.cpp main.cpp base64.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
 LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs
