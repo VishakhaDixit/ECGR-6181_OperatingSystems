@@ -13,11 +13,12 @@ LIBS = -lpthread
 
 OUTPUT_DIR = ../../build
 OBJECT_DIR = $(OUTPUT_DIR)/$(TARGET)/obj
+COMMON_OBJ = $(OUTPUT_DIR)/common/obj
 
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
 # Source files and dependencies
-SRC = client.cpp main.cpp base64.cpp
+SRC = client.cpp main.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
 LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs
@@ -26,11 +27,18 @@ CFLAGS += $(INC_PATH) -c
 
 #============================ RECEPIES ========================================
 
-all: bin
+all: common bin
 
 compile: $(OBJ)
 execfile: $(TARGET).$(EXT)
 bin: $(TARGET).$(EXT)
+
+common :
+	cd ../common && make
+	cd ../$(TARGET)
+
+common_clean:
+	cd ../common && make clean
 
 %.o: %.cpp
 	@if [ ! -d $(OUTPUT_DIR) ];then mkdir $(OUTPUT_DIR);fi
@@ -40,9 +48,9 @@ bin: $(TARGET).$(EXT)
 
 
 $(TARGET).$(EXT): $(OBJ)
-	$(CC) $(OBJECT_DIR)/*.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
+	$(CC) $(OBJECT_DIR)/*.o $(COMMON_OBJ)/*.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
 
 
-clean: 
+clean: common_clean
 	rm -rf $(OUTPUT_DIR)/$(TARGET)
 	rm -f $(OUTPUT_DIR)/$(TARGET).$(EXT)
