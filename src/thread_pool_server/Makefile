@@ -18,7 +18,7 @@ COMMON_OBJ = $(OUTPUT_DIR)/common/obj
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
 # Source files and dependencies
-SRC = main.cpp multi_thread_server.cpp
+SRC = main.cpp thread_pool_server.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
 LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs
