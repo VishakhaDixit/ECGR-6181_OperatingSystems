@@ -22,8 +22,8 @@ class server
         void send_image();
 
     private:
-        struct sockaddr_in address;
-        int server_fd, new_socket;
+        struct sockaddr_in serverAddr, clientAddr;
+        int server_fd, client_fd;
         int addrlen;
 
 };
