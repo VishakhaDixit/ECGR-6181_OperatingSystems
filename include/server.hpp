@@ -18,12 +18,11 @@ class server
         ~server() = default;
         void run();
         cv::Mat recieve_image();
-        void process_image();
-        void send_image();
+        cv::Mat process_image(cv::Mat img);
+        void send_image(cv::Mat cvImg);
 
     private:
         struct sockaddr_in serverAddr, clientAddr;
         int server_fd, client_fd;
         int addrlen;
-
 };

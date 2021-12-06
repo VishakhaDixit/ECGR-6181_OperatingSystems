@@ -23,7 +23,7 @@ namespace convertors
 
         // sleep for 10 seconds
         std::cout << "CVT2GRAY: Image converted to grayscale, sleeping" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds{ 10 });
+        //std::this_thread::sleep_for(std::chrono::seconds{ 10 });
         std::cout << "CVT2GRAY: Simulated load compleate, waking up" << std::endl;
 
         return ret;
