@@ -64,25 +64,35 @@ cv::Mat server::recieve_image()
     return image;
 }
 
+cv::Mat server::process_image(cv::Mat img)
+{
+    cv::Mat greyImg = convertors::convert_to_grayscale(img);
+    return greyImg;
+}
+
+void server::send_image(cv::Mat cvImg) 
+{
+    std::vector<unsigned char> buf;
+    cv::imencode(".png", cvImg, buf);
+    auto base64_png = reinterpret_cast<const unsigned char*>(buf.data());
+    std::string encode_png = base64_encode(base64_png, buf.size());
+
+    std::string message = std::to_string(encode_png.length()) + "\n" + encode_png;
+    send(client_fd, message.data(), message.length(), 0);
+
+    cout << "Server:Image was sent" << std::endl;
+    close(client_fd);
+}
+
 void server::run()
 {
-    std::cout << "MainServer: Main server started" << std::endl; 
-    // addrlen = sizeof(serverAddr); 
-
+    std::cout << "MainServer: Main server started" << std::endl;
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
     { 
         perror("socket failed"); 
         exit(EXIT_FAILURE); 
-    } 
-    
-    // // Forcefully attaching socket to the port 8080 
-    // if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
-    //                                             &opt, sizeof(opt))) 
-    // { 
-    //     perror("setsockopt"); 
-    //     exit(EXIT_FAILURE); 
-    // } 
+    }
 
     serverAddr.sin_family = AF_INET; 
     serverAddr.sin_addr.s_addr = INADDR_ANY; 
