@@ -5,9 +5,12 @@ void simpleServer::run()
     create_server_sock();
     int clientSock = wait_for_client();
 
-    cv::Mat serverImg = recieve_image(clientSock);
-    cv::Mat greyImg   = process_image(serverImg);
-    send_image(clientSock, greyImg);
+    if(clientSock != -1)
+    {
+        cv::Mat serverImg = recieve_image(clientSock);
+        cv::Mat greyImg   = process_image(serverImg);
+        send_image(clientSock, greyImg);
+    }
 }
 
 void simpleServer::create_server_sock()
@@ -50,5 +53,10 @@ int simpleServer::wait_for_client()
     {
         cout << "Client Connected!" << std::endl;
         return client_fd;
+    }
+    else
+    {
+        cout << "Client Connection invalid" << std::endl;
+        return -1;
     }
 }
