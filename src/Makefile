@@ -1,6 +1,6 @@
 all:
 	cd client && make
-	cd simpleServer && make
+	cd simple_server && make
 	cd multi_thread_server && make
 
 client:
@@ -8,5 +8,5 @@ client:
 
 clean:
 	cd client && make clean
-	cd simpleServer && make clean
+	cd simple_server && make clean
 	cd multi_thread_server && make clean

@@ -4,7 +4,7 @@ CC = g++
 CFLAGS   = -O0 -Wall -std=c++11
 INC_PATH = -I/usr/local/include/opencv4 -I../../include/
 EXT = out
-TARGET = simpleServer
+TARGET = simple_server
 
 OPENCV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d \
 			  -lopencv_calib3d -lopencv_objdetect -lopencv_flann -lopencv_imgcodecs -lopencv_videoio
