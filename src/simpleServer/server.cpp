@@ -84,7 +84,7 @@ void server::send_image(cv::Mat cvImg)
     close(client_fd);
 }
 
-void server::run()
+void server::create_server_sock()
 {
     std::cout << "MainServer: Main server started" << std::endl;
     // Creating socket file descriptor 
@@ -97,7 +97,7 @@ void server::run()
     serverAddr.sin_family = AF_INET; 
     serverAddr.sin_addr.s_addr = INADDR_ANY; 
     serverAddr.sin_port = htons( PORT ); 
-    
+
     // Forcefully attaching socket to the port 8080 
     if (bind(server_fd, (struct sockaddr *)&serverAddr,  
                                 sizeof(serverAddr))<0) 
@@ -121,5 +121,4 @@ void server::run()
     {
         cout << "Client Connected!" << std::endl;
     }
-
 }

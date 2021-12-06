@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <fstream>
 #include <unistd.h> 
+#include "image_converter.hpp"
 #include <opencv4/opencv2/opencv.hpp>
 
 #define PORT 8080
@@ -16,10 +17,15 @@ class server
     public:
         server()  = default;
         ~server() = default;
-        void run();
+
+        virtual void run() = 0;
+
+    protected:
+        void    execute_thread();
+        void    create_server_sock();
         cv::Mat recieve_image();
         cv::Mat process_image(cv::Mat img);
-        void send_image(cv::Mat cvImg);
+        void    send_image(cv::Mat cvImg);
 
     private:
         struct sockaddr_in serverAddr, clientAddr;
