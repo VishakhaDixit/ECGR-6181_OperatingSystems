@@ -7,4 +7,6 @@ class simpleServer : public server
         ~simpleServer()  = default;
 
         void run();
+
+        void create_thread();
 };
