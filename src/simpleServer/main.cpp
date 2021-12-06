@@ -4,10 +4,6 @@ int main()
 {
     server simpleServer;
     simpleServer.run();
-
-    while (1)
-    {
-        
-    }
-    
+    cv::Mat serverImg = simpleServer.recieve_image();
+    cv::imwrite("serverImage.png", serverImg);
 }

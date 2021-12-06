@@ -6,7 +6,8 @@
 
 #include <opencv2/opencv.hpp>
 
-namespace convertors{
+namespace convertors
+{
     cv::Mat convert_to_grayscale(cv::Mat in) 
     {
         // create an empty image of the same size and
