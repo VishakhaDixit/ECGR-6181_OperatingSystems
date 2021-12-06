@@ -1,12 +1,7 @@
-#include <server.hpp>
-#include "image_converter.hpp"
+#include <simple_server.hpp>
 
 int main()
 {
-    server simpleServer;
-    simpleServer.run();
-    cv::Mat serverImg = simpleServer.recieve_image();
-    cv::Mat greyImg = simpleServer.process_image(serverImg);
-    simpleServer.send_image(greyImg);
-    //cv::imwrite("server_greyImage.png", greyImg);
+    simpleServer server;
+    server.run();
 }
