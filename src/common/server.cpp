@@ -112,7 +112,21 @@ void server::create_server_sock()
         perror("listen"); 
         exit(EXIT_FAILURE); 
     }
+}
 
+void server::execute_thread()
+{
+    std::this_thread::sleep_for(std::chrono::seconds{ 10 });
+
+    cv::Mat serverImg = recieve_image();
+    cv::Mat greyImg   = process_image(serverImg);
+    send_image(greyImg);
+
+    close(client_fd);
+}
+
+void server::wait_for_client()
+{
     std::cout << "MainServer: Socket server setup. Waiting for connections" << std::endl; 
 
     // if we get a new connection request
