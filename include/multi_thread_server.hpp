@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include <atomic>
 
 class multiThreadServer : public server
 {
@@ -8,10 +9,28 @@ class multiThreadServer : public server
 
         void run();
 
-        void create_thread();
+        void create_server_sock();
+        
+        int wait_for_client();
 
-        void stop();
+        void execute_thread(int id, int client_fd);
+
+        void create_thread(int client_fd);
+
+        void destroy_thread();
 
     private:
-        std::thread mThread;
+        static int threadId;
+        struct ThreadData
+        {
+            std::atomic_bool finished;
+            std::thread thread;
+        };
+
+        std::mutex mMutex;
+        std::unordered_map<int, ThreadData> mThreads;
+
+        struct sockaddr_in serverAddr, clientAddr;
+        int server_fd;
+        int addrlen;
 };

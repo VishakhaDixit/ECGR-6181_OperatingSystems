@@ -2,8 +2,6 @@
 
 int main()
 {
-    multiThreadServer server;
-
-    server.run();
-    server.create_thread();
+    multiThreadServer srv;
+    srv.run();
 }

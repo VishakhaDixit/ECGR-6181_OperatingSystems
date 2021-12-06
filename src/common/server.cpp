@@ -2,7 +2,7 @@
 #include "image_converter.hpp"
 #include "base64.h"
 
-cv::Mat server::recieve_image()
+cv::Mat server::recieve_image(int client_fd)
 {
     // master buffer for the entire image
     std::string imageBuffer{ };
@@ -70,7 +70,7 @@ cv::Mat server::process_image(cv::Mat img)
     return greyImg;
 }
 
-void server::send_image(cv::Mat cvImg) 
+void server::send_image(int client_fd, cv::Mat cvImg) 
 {
     std::vector<unsigned char> buf;
     cv::imencode(".png", cvImg, buf);
@@ -82,57 +82,4 @@ void server::send_image(cv::Mat cvImg)
 
     cout << "Server:Image was sent" << std::endl;
     close(client_fd);
-}
-
-void server::create_server_sock()
-{
-    std::cout << "MainServer: Main server started" << std::endl;
-    // Creating socket file descriptor 
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
-    { 
-        perror("socket failed"); 
-        exit(EXIT_FAILURE); 
-    }
-
-    serverAddr.sin_family = AF_INET; 
-    serverAddr.sin_addr.s_addr = INADDR_ANY; 
-    serverAddr.sin_port = htons( PORT ); 
-
-    // Forcefully attaching socket to the port 8080 
-    if (bind(server_fd, (struct sockaddr *)&serverAddr,  
-                                sizeof(serverAddr))<0) 
-    { 
-        perror("bind failed"); 
-        exit(EXIT_FAILURE); 
-    }
-
-    // Listen to on the addr and port
-    if (listen(server_fd, 3) < 0) 
-    { 
-        perror("listen"); 
-        exit(EXIT_FAILURE); 
-    }
-}
-
-void server::execute_thread()
-{
-    std::this_thread::sleep_for(std::chrono::seconds{ 10 });
-
-    cv::Mat serverImg = recieve_image();
-    cv::Mat greyImg   = process_image(serverImg);
-    send_image(greyImg);
-
-    close(client_fd);
-}
-
-void server::wait_for_client()
-{
-    std::cout << "MainServer: Socket server setup. Waiting for connections" << std::endl; 
-
-    // if we get a new connection request
-    int clientAddrSize = sizeof(clientAddr);
-    if((client_fd = accept(server_fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientAddrSize)))
-    {
-        cout << "Client Connected!" << std::endl;
-    }
 }

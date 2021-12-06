@@ -21,21 +21,12 @@ class server
         ~server() = default;
 
         virtual void run() = 0;
-        void    execute_thread();
 
     protected:
 
-        virtual void create_thread() = 0;
-
-        void    create_server_sock();
-        void    wait_for_client();
-        cv::Mat recieve_image();
+        virtual void create_server_sock() = 0;
+        virtual int  wait_for_client() = 0;
+        cv::Mat recieve_image(int client_fd);
         cv::Mat process_image(cv::Mat img);
-        void    send_image(cv::Mat cvImg);
-
-    private:
-
-        struct sockaddr_in serverAddr, clientAddr;
-        int server_fd, client_fd;
-        int addrlen;
+        void    send_image(int client_fd, cv::Mat cvImg);
 };
