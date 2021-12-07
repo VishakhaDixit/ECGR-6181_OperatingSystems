@@ -56,4 +56,5 @@ $(TARGET).$(EXT): $(OBJ)
 
 clean: common_clean
 	rm -rf $(OUTPUT_DIR)/$(TARGET)
+	rm -rf $(OUTPUT_DIR)/thread_pool_priority_server
 	rm -f $(OUTPUT_DIR)/$(TARGET).$(EXT)

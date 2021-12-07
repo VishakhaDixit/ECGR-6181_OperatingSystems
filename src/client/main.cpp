@@ -2,5 +2,5 @@
 
 int main() 
 {
-    client::get_grayscale("Lenna.png");
+    client::get_grayscale("../test/Lenna.png");
 }
