@@ -23,9 +23,58 @@ namespace convertors
 
         // sleep for 10 seconds
         std::cout << "CVT2GRAY: Image converted to grayscale, sleeping" << std::endl;
-        //std::this_thread::sleep_for(std::chrono::seconds{ 10 });
         std::cout << "CVT2GRAY: Simulated load compleate, waking up" << std::endl;
 
         return ret;
+    }
+
+    cv::Mat convert_to_negative(cv::Mat in)
+    {
+        cv::Mat grey = convert_to_grayscale(in);
+        return 255 - grey;
+    }
+
+    cv::Mat gaussian_blur(cv::Mat in)
+    {
+        cv::Mat ret
+        {
+            in.rows,
+            in.cols,
+            in.type()
+        };
+        cv::GaussianBlur(in, ret, cv::Size(5,5), 0);
+        return ret;
+    }
+
+    cv::Mat flip90_image(cv::Mat in)
+    {
+        cv::Mat ret;
+        cv::transpose(in, ret);
+        cv::flip(ret,ret,1);
+
+        return ret;
+    }
+
+    cv::Mat select_filter(int filter, cv::Mat in)
+    {
+        cv::Mat ret;
+
+        switch (filter)
+        {
+            case 1:
+                ret = convert_to_grayscale(in);
+                return ret;
+            case 2:
+                ret = convert_to_negative(in);
+                return ret;
+            case 3:
+                ret = gaussian_blur(in);
+                return ret;
+            case 4:
+                ret = flip90_image(in);
+                return ret;
+            default:
+                return ret;
+        }
     }
 }
