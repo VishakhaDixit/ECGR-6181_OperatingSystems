@@ -1,5 +1,7 @@
 #include "server.hpp"
 
+#define SIMPLE_SERVER_PORT 8080
+
 class simpleServer : public server
 {
     public:
@@ -8,7 +10,7 @@ class simpleServer : public server
 
         void run();
 
-        void create_server_sock();
+        void create_server_sock(int port);
         
         int wait_for_client();
 

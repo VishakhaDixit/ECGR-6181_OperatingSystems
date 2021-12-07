@@ -15,7 +15,7 @@
 
 namespace client
 {
-    void convert_image(string path, uint8_t filter_choice)
+    void convert_image(string path, uint8_t filter_choice, int port)
     {
         int server = 0;
         struct sockaddr_in serverAddr;
@@ -30,7 +30,7 @@ namespace client
 
         serverAddr.sin_family = AF_INET;
         serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-        serverAddr.sin_port = htons(PORT);
+        serverAddr.sin_port = htons(port);
 
         if(connect(server, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
         {
@@ -97,7 +97,7 @@ namespace client
 
         // parse the string length to an int
         size_t totalImgLength = std::stoll(imgLength);
-        std::cout << "NETWRK: Image with len: " << totalImgLength << " receiving" << std::endl;
+        std::cout << "Image len: " << totalImgLength << " receiving" << std::endl;
 
         // reserve more data so we dont do unnecessary reallocs
         imageBuffer.reserve(totalImgLength + 32);
@@ -117,7 +117,7 @@ namespace client
         std::vector<unsigned char> raw_img{ decoded_img.begin(), decoded_img.end() };
         cv::Mat image = cv::imdecode(raw_img, cv::IMREAD_COLOR);
 
-        std::cout << "NETWRK: Received image" << std::endl;
+        std::cout << "Received image" << std::endl;
 
         // return the decoded image
         return image;

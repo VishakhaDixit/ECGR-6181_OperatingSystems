@@ -13,7 +13,7 @@ using namespace std;
 
 namespace client
 {
-    void convert_image(string path, uint8_t filter_choice);
+    void convert_image(string path, uint8_t filter_choice, int port);
 
     void send_image(int socket, string img, uint8_t filter_choice);
 

@@ -6,21 +6,24 @@ void simpleServer::run()
     cv::Mat convertedImg;
     std::pair<cv::Mat, uint8_t> p;
 
-    create_server_sock();
-    int clientSock = wait_for_client();
-
-    if(clientSock != -1)
+    create_server_sock(SIMPLE_SERVER_PORT);
+    while(1)
     {
-        p = recieve_image(clientSock);
+        int clientSock = wait_for_client();
 
-        convertedImg = process_image(p.first, p.second - 48);
-        send_image(clientSock, convertedImg);
+        if(clientSock != -1)
+        {
+            p = recieve_image(clientSock);
+
+            convertedImg = process_image(p.first, p.second - 48);
+            send_image(clientSock, convertedImg);
+        }
     }
 }
 
-void simpleServer::create_server_sock()
+void simpleServer::create_server_sock(int port)
 {
-    std::cout << "MainServer: Main server started" << std::endl;
+    std::cout << "Server started" << std::endl;
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
     { 
@@ -30,7 +33,7 @@ void simpleServer::create_server_sock()
 
     serverAddr.sin_family = AF_INET; 
     serverAddr.sin_addr.s_addr = INADDR_ANY; 
-    serverAddr.sin_port = htons( PORT ); 
+    serverAddr.sin_port = htons(port); 
 
     // Forcefully attaching socket to the port 8080 
     if (bind(server_fd, (struct sockaddr *)&serverAddr,  
@@ -50,18 +53,18 @@ void simpleServer::create_server_sock()
 
 int simpleServer::wait_for_client()
 {
-    std::cout << "MainServer: Socket server setup. Waiting for connections" << std::endl; 
+    std::cout << std::endl << "Waiting for connections" << std::endl; 
 
     // if we get a new connection request
     int clientAddrSize = sizeof(clientAddr);
     if((client_fd = accept(server_fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientAddrSize)))
     {
-        cout << "Client Connected!" << std::endl;
+        cout << std::endl << "Client Connected!" << std::endl;
         return client_fd;
     }
     else
     {
-        cout << "Client Connection invalid" << std::endl;
+        cout << std::endl << "Client Connection invalid" << std::endl;
         return -1;
     }
 }

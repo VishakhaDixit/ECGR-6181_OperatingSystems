@@ -28,7 +28,7 @@ threadPoolPriorityServer::threadPoolPriorityServer(int maxThreads)
 
 void threadPoolPriorityServer::run()
 {
-    create_server_sock();
+    create_server_sock(THREAD_POOL_PRIORITY_SERVER_PORT);
     serverThread = std::thread{ &threadPoolPriorityServer::server_thread, this }; 
     pthread_attr_t tattr;
     sched_param param;
@@ -46,7 +46,7 @@ void threadPoolPriorityServer::run()
 
 void threadPoolPriorityServer::server_thread()
 {
-    std::cout << "Creating server thread with higher priority" << std::endl;
+    std::cout << std::endl << "Creating server thread with higher priority" << std::endl;
     while (true)
     {
         int client_fd = wait_for_client();

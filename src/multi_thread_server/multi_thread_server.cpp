@@ -4,7 +4,7 @@ int multiThreadServer::threadId = 0;
 
 void multiThreadServer::run()
 {
-    create_server_sock();
+    create_server_sock(MULTI_SERVER_PORT);
     while(1)
     {
         int clientSock = wait_for_client();
@@ -56,7 +56,7 @@ void multiThreadServer::execute_thread(int id, int client_fd)
     cout << "Thread: "<<id<< " Finished"<<std::endl;
 }
 
-void multiThreadServer::create_server_sock()
+void multiThreadServer::create_server_sock(int port)
 {
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
@@ -67,7 +67,7 @@ void multiThreadServer::create_server_sock()
 
     serverAddr.sin_family = AF_INET; 
     serverAddr.sin_addr.s_addr = INADDR_ANY; 
-    serverAddr.sin_port = htons( PORT ); 
+    serverAddr.sin_port = htons(port); 
 
     // Forcefully attaching socket to the port 8080 
     if (bind(server_fd, (struct sockaddr *)&serverAddr,  
@@ -87,14 +87,14 @@ void multiThreadServer::create_server_sock()
 
 int multiThreadServer::wait_for_client()
 {
-    std::cout << "Waiting for connections" << std::endl; 
+    std::cout << std::endl << "Waiting for connections" << std::endl; 
 
     // if we get a new connection request
     int clientAddrSize = sizeof(clientAddr);
     int client_fd;
     if((client_fd = accept(server_fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientAddrSize)))
     {
-        cout << "Client Connected!" << std::endl;
+        cout << std::endl << "Client Connected!" << std::endl;
         return client_fd;
     }
     else

@@ -1,6 +1,8 @@
 #include "server.hpp"
 #include <condition_variable>
 
+#define THREAD_POOL_SERVER_PORT 8082
+
 class threadPoolServer : public server
 {
     public:
@@ -9,7 +11,7 @@ class threadPoolServer : public server
 
         void run();
 
-        void create_server_sock();
+        void create_server_sock(int port);
         
         int wait_for_client();
 

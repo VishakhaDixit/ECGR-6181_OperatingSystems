@@ -1,6 +1,8 @@
 #include "thread_pool_server.hpp"
 #include <condition_variable>
 
+#define THREAD_POOL_PRIORITY_SERVER_PORT 8083
+
 class threadPoolPriorityServer : public threadPoolServer
 {
     public:

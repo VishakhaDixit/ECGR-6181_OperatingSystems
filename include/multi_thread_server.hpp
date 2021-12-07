@@ -1,6 +1,8 @@
 #include "server.hpp"
 #include <atomic>
 
+#define MULTI_SERVER_PORT 8081
+
 class multiThreadServer : public server
 {
     public:
@@ -9,7 +11,7 @@ class multiThreadServer : public server
 
         void run();
 
-        void create_server_sock();
+        void create_server_sock(int port);
         
         int wait_for_client();
 
