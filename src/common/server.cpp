@@ -13,6 +13,8 @@ cv::Mat server::recieve_image(int client_fd)
     imgLength.reserve(128 + 16);
     imageBuffer.reserve(128 + 16);
 
+    char filter_choice;
+
     bool lengthFound = false;
     do {
         // raw buffer for the recv function
@@ -29,7 +31,8 @@ cv::Mat server::recieve_image(int client_fd)
             imgLength.push_back(buffer[i]);
 
             if (buffer[i] == '\n') {
-                std::move(buffer.begin() + i + 1, buffer.begin() + numread, std::back_inserter(imageBuffer));
+                filter_choice = buffer[i+1];
+                std::move(buffer.begin() + i + 3, buffer.begin() + numread, std::back_inserter(imageBuffer));
                 lengthFound = true;
                 break;
             }

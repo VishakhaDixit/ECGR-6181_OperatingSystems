@@ -54,7 +54,7 @@ namespace client
         auto base64_png = reinterpret_cast<const unsigned char*>(buf.data());
         std::string encode_png = base64_encode(base64_png, buf.size());
 
-        std::string message = std::to_string(encode_png.length()) + "\n" + encode_png;
+        std::string message = std::to_string(encode_png.length()) + "\n" + std::to_string(2) + "\n" + encode_png;
         send(socket, message.data(), message.length(), 0);
 
         cout << "Image was sent" << std::endl;
