@@ -41,7 +41,9 @@ namespace client
         send_image(server, path);
         cv::Mat grayImg = receive_image(server);
 
-        cv::imwrite("client_grayscale.png", grayImg);
+        cv::imshow("client sent", cv::imread(path));
+        cv::imshow("client recieved",grayImg);
+        cv::waitKey(0);
     }
 
     void send_image(int socket, string img) 
