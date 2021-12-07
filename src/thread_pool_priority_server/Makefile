@@ -4,7 +4,7 @@ CC = g++
 CFLAGS   = -O0 -Wall -std=c++11
 INC_PATH = -I/usr/local/include/opencv4 -I../../include/
 EXT = out
-TARGET = simple_server
+TARGET = thread_pool_priority_server
 
 OPENCV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d \
 			  -lopencv_calib3d -lopencv_objdetect -lopencv_flann -lopencv_imgcodecs -lopencv_videoio
@@ -18,7 +18,7 @@ COMMON_OBJ = $(OUTPUT_DIR)/common/obj
 EXE = $(OUTPUT_DIR)/$(PRGM).$(EXT)
 
 # Source files and dependencies
-SRC = main.cpp simple_server.cpp
+SRC = main.cpp thread_pool_priority_server.cpp
 OBJ += $(patsubst %.cpp, %.o, $(SRC))
 
 LDFLAGS = $(LIBS) -L/usr/local/lib $(OPENCV_LIBS) -Wall -lstdc++fs
@@ -27,7 +27,7 @@ CFLAGS += $(INC_PATH) -c
 
 #============================ RECEPIES ========================================
 
-all:  common bin
+all:  common thread_pool bin
 
 compile: $(OBJ)
 execfile: $(TARGET).$(EXT)
@@ -40,6 +40,9 @@ common :
 common_clean:
 	cd ../common && make clean
 
+thread_pool:
+	cd ../thread_pool_server && make
+
 %.o: %.cpp
 	@if [ ! -d $(OUTPUT_DIR) ];then mkdir $(OUTPUT_DIR);fi
 	@if [ ! -d $(OUTPUT_DIR)/$(TARGET) ];then mkdir $(OUTPUT_DIR)/$(TARGET);fi
@@ -48,7 +51,7 @@ common_clean:
 
 
 $(TARGET).$(EXT): $(OBJ)
-	$(CC) $(OBJECT_DIR)/*.o $(COMMON_OBJ)/*.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
+	$(CC) $(OBJECT_DIR)/*.o $(COMMON_OBJ)/*.o $(OUTPUT_DIR)/thread_pool_server/obj/thread_pool_server.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
 
 
 clean: common_clean

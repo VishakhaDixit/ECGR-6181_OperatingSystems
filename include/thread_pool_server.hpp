@@ -17,7 +17,7 @@ class threadPoolServer : public server
 
         void destroy_thread();
 
-    private:
+    protected:
 
         std::vector<std::thread> mThreads;
 

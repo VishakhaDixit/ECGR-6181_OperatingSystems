@@ -46,6 +46,7 @@ void threadPoolServer::execute_thread(int id)
             connQueue.pop();
             cout << "Thread "<< id << ": Processing Image."<<endl;
             cv::Mat serverImg = recieve_image(client_fd);
+            std::this_thread::sleep_for(std::chrono::seconds{ 10 });
             cv::Mat greyImg   = process_image(serverImg);
             send_image(client_fd, greyImg);
             cout << "Thread "<< id << ": Processed Image."<<endl;
