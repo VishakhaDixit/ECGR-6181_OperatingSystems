@@ -3,6 +3,8 @@
 threadPoolServer::threadPoolServer(int maxThreads)
     : server{}
 {
+    std::cout << std::endl << "Creating Pool of threads" << std::endl;
+
     //Create specified number of threads in the pool
     for(int i = 0; i < maxThreads; i++)
     {
@@ -27,6 +29,9 @@ void threadPoolServer::run()
 
 void threadPoolServer::execute_thread(int id)
 {
+    cv::Mat convertedImg;
+    std::pair<cv::Mat, uint8_t> p;
+
     cout << endl << "Thread "<< id << ": Spawned"<<endl;
     while (true)
     {
@@ -45,10 +50,10 @@ void threadPoolServer::execute_thread(int id)
             int client_fd = connQueue.front();
             connQueue.pop();
             cout << "Thread "<< id << ": Processing Image."<<endl;
-            cv::Mat serverImg = recieve_image(client_fd);
+            p = recieve_image(client_fd);
             std::this_thread::sleep_for(std::chrono::seconds{ 10 });
-            cv::Mat greyImg   = process_image(serverImg);
-            send_image(client_fd, greyImg);
+            convertedImg = process_image(p.first, p.second - 48);
+            send_image(client_fd, convertedImg);
             cout << "Thread "<< id << ": Processed Image."<<endl;
         }
     }
@@ -57,7 +62,6 @@ void threadPoolServer::execute_thread(int id)
 
 void threadPoolServer::create_server_sock()
 {
-    std::cout << "MainServer: Main server started" << std::endl;
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
     { 
@@ -87,7 +91,7 @@ void threadPoolServer::create_server_sock()
 
 int threadPoolServer::wait_for_client()
 {
-    std::cout << "MainServer: Socket server setup. Waiting for connections" << std::endl; 
+    std::cout << "Waiting for connections" << std::endl; 
 
     // if we get a new connection request
     int clientAddrSize = sizeof(clientAddr);

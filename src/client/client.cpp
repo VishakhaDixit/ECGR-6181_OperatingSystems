@@ -15,7 +15,7 @@
 
 namespace client
 {
-    void get_grayscale(std::string path)
+    void convert_image(string path, uint8_t filter_choice)
     {
         int server = 0;
         struct sockaddr_in serverAddr;
@@ -38,7 +38,7 @@ namespace client
             return ;
         }
 
-        send_image(server, path);
+        send_image(server, path, filter_choice);
         cv::Mat grayImg = receive_image(server);
 
         cv::imshow("client sent", cv::imread(path));
@@ -46,7 +46,7 @@ namespace client
         cv::waitKey(0);
     }
 
-    void send_image(int socket, string img) 
+    void send_image(int socket, string img, uint8_t filter_choice) 
     {
         cv::Mat cvImg = cv::imread(img);
         std::vector<unsigned char> buf;
@@ -54,7 +54,8 @@ namespace client
         auto base64_png = reinterpret_cast<const unsigned char*>(buf.data());
         std::string encode_png = base64_encode(base64_png, buf.size());
 
-        std::string message = std::to_string(encode_png.length()) + "\n" + std::to_string(2) + "\n" + encode_png;
+        std::string message = std::to_string(encode_png.length()) + "\n" + 
+                                std::to_string(filter_choice - 48) + "\n" + encode_png;
         send(socket, message.data(), message.length(), 0);
 
         cout << "Image was sent" << std::endl;

@@ -2,14 +2,19 @@
 
 void simpleServer::run()
 {
+    cv::Mat serverImg;
+    cv::Mat convertedImg;
+    std::pair<cv::Mat, uint8_t> p;
+
     create_server_sock();
     int clientSock = wait_for_client();
 
     if(clientSock != -1)
     {
-        cv::Mat serverImg = recieve_image(clientSock);
-        cv::Mat greyImg   = process_image(serverImg);
-        send_image(clientSock, greyImg);
+        p = recieve_image(clientSock);
+
+        convertedImg = process_image(p.first, p.second - 48);
+        send_image(clientSock, convertedImg);
     }
 }
 

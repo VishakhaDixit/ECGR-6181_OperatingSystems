@@ -13,9 +13,9 @@ using namespace std;
 
 namespace client
 {
-    void get_grayscale(string path);
+    void convert_image(string path, uint8_t filter_choice);
 
-    void send_image(int socket, string img);
+    void send_image(int socket, string img, uint8_t filter_choice);
 
     cv::Mat receive_image(int socket);
 

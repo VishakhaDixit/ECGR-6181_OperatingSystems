@@ -12,21 +12,11 @@ void multiThreadServer::run()
         {
             create_thread(clientSock);
         }
-        // for(auto it : mThreads)
-        // {
-        //     ThreadData data;
-        //     data = it.second;
-        //     if(data.finished.load())
-        //     {
-        //         data.thread.join();
-        //     }
-        // }
     }
 }
 
 void multiThreadServer::destroy_thread()
 {
-    //mThread.join();
 }
 
 void multiThreadServer::create_thread(int client_fd)
@@ -48,11 +38,15 @@ void multiThreadServer::create_thread(int client_fd)
 
 void multiThreadServer::execute_thread(int id, int client_fd)
 {
+    cv::Mat convertedImg;
+    std::pair<cv::Mat, uint8_t> p;
+
     std::this_thread::sleep_for(std::chrono::seconds{ 10 });
 
-    cv::Mat serverImg = recieve_image(client_fd);
-    cv::Mat greyImg   = process_image(serverImg);
-    send_image(client_fd, greyImg);
+        p = recieve_image(client_fd);
+
+        convertedImg = process_image(p.first, p.second - 48);
+        send_image(client_fd, convertedImg);
     
     {
         std::lock_guard<std::mutex> lock{ mMutex };
@@ -64,7 +58,6 @@ void multiThreadServer::execute_thread(int id, int client_fd)
 
 void multiThreadServer::create_server_sock()
 {
-    std::cout << "MainServer: Main server started" << std::endl;
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
     { 
@@ -94,7 +87,7 @@ void multiThreadServer::create_server_sock()
 
 int multiThreadServer::wait_for_client()
 {
-    std::cout << "MainServer: Socket server setup. Waiting for connections" << std::endl; 
+    std::cout << "Waiting for connections" << std::endl; 
 
     // if we get a new connection request
     int clientAddrSize = sizeof(clientAddr);

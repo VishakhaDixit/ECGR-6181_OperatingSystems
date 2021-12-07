@@ -2,7 +2,7 @@
 #include "image_converter.hpp"
 #include "base64.h"
 
-cv::Mat server::recieve_image(int client_fd)
+pair<cv::Mat, uint8_t> server::recieve_image(int client_fd)
 {
     // master buffer for the entire image
     std::string imageBuffer{ };
@@ -41,7 +41,7 @@ cv::Mat server::recieve_image(int client_fd)
 
     // parse the string length to an int
     size_t totalImgLength = std::stoll(imgLength);
-    std::cout << "NETWRK: Image with len: " << totalImgLength << " receiving" << std::endl;
+    std::cout << "Image len: " << totalImgLength << " receiving" << std::endl;
 
     // reserve more data so we dont do unnecessary reallocs
     imageBuffer.reserve(totalImgLength + 32);
@@ -61,16 +61,17 @@ cv::Mat server::recieve_image(int client_fd)
     std::vector<unsigned char> raw_img{ decoded_img.begin(), decoded_img.end() };
     cv::Mat image = cv::imdecode(raw_img, cv::IMREAD_COLOR);
 
-    std::cout << "NETWRK: Received image" << std::endl;
+    std::cout << "Image received" << std::endl;
 
     // return the decoded image
-    return image;
+    return make_pair(image, filter_choice);
 }
 
-cv::Mat server::process_image(cv::Mat img)
+cv::Mat server::process_image(cv::Mat img, uint8_t filterCh)
 {
-    cv::Mat greyImg = convertors::convert_to_grayscale(img);
-    return greyImg;
+    cv::Mat convertedImg;
+    convertedImg = convertors::select_filter(img, filterCh);
+    return convertedImg;
 }
 
 void server::send_image(int client_fd, cv::Mat cvImg) 

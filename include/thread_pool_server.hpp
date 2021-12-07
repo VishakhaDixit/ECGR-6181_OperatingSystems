@@ -4,7 +4,7 @@
 class threadPoolServer : public server
 {
     public:
-        threadPoolServer(int maxThreads = 4);
+        threadPoolServer(int maxThreads = 3);
         ~threadPoolServer()  = default;
 
         void run();

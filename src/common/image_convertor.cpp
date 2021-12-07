@@ -21,10 +21,6 @@ namespace convertors
         // convert the color to grayscale
         cv::cvtColor(in, ret, cv::COLOR_RGB2GRAY);
 
-        // sleep for 10 seconds
-        std::cout << "CVT2GRAY: Image converted to grayscale, sleeping" << std::endl;
-        std::cout << "CVT2GRAY: Simulated load compleate, waking up" << std::endl;
-
         return ret;
     }
 
@@ -42,7 +38,7 @@ namespace convertors
             in.cols,
             in.type()
         };
-        cv::GaussianBlur(in, ret, cv::Size(5,5), 0);
+        cv::GaussianBlur(in, ret, cv::Size(9,9), 0);
         return ret;
     }
 
@@ -55,7 +51,7 @@ namespace convertors
         return ret;
     }
 
-    cv::Mat select_filter(int filter, cv::Mat in)
+    cv::Mat select_filter(cv::Mat in, uint8_t filter)
     {
         cv::Mat ret;
 

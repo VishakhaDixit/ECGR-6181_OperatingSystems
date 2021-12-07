@@ -24,8 +24,6 @@ threadPoolPriorityServer::threadPoolPriorityServer(int maxThreads)
     for (auto &t : mThreads) {
         pthread_setschedparam(t.native_handle(), policy, &param);
     }
-
-    std::cout << "ThreadPoolPriority: Priority of thread set" << std::endl;
 }
 
 void threadPoolPriorityServer::run()
@@ -44,11 +42,11 @@ void threadPoolPriorityServer::run()
     pthread_attr_setschedparam(&tattr, &param);
 
     pthread_setschedparam(serverThread.native_handle(), policy, &param);
-    std::cout << "MainServer: Priority changed" << std::endl;
 }
 
 void threadPoolPriorityServer::server_thread()
 {
+    std::cout << "Creating server thread with higher priority" << std::endl;
     while (true)
     {
         int client_fd = wait_for_client();
