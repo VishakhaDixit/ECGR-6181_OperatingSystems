@@ -51,7 +51,8 @@ thread_pool:
 
 
 $(TARGET).$(EXT): $(OBJ)
-	$(CC) $(OBJECT_DIR)/*.o $(COMMON_OBJ)/*.o $(OUTPUT_DIR)/thread_pool_server/obj/thread_pool_server.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
+	$(CC) $(OBJECT_DIR)/*.o $(COMMON_OBJ)/*.o $(OUTPUT_DIR)/thread_pool_server/obj/thread_pool_server.o \
+	$(OUTPUT_DIR)/thread_pool_server/obj/bounded_queue.o -o $(OUTPUT_DIR)/$(TARGET).$(EXT) $(LDFLAGS)
 
 
 clean: common_clean

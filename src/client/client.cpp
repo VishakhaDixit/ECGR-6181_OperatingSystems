@@ -1,15 +1,3 @@
-/**************************
- *
- * @file    client.cpp
- *
- * @brief   
- *
- * @date    Nov 29, 2021
- *
- * @author  Vishakha Dixit
- *
- **************************/
-
 #include "client.hpp"
 #include "base64.h"
 

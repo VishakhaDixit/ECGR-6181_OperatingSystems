@@ -5,9 +5,7 @@
 #include <unistd.h> 
 #include <opencv4/opencv2/opencv.hpp>
 
-#define PORT 8080
 #define IP   "127.0.0.1"
-#define IMG_PATH "/home/vdixit2/Downloads"
 
 using namespace std;
 
