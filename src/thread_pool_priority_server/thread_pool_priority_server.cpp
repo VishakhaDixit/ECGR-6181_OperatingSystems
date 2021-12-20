@@ -12,7 +12,12 @@ threadPoolPriorityServer::threadPoolPriorityServer(int maxThreads)
     // Set the priorities
     pthread_attr_t tattr;
     sched_param param;
+    int core = 0, num_cores = 4;
+    cpu_set_t cpuset;
     int policy = SCHED_FIFO;
+
+    CPU_ZERO(&cpuset);
+    CPU_SET(core, &cpuset);
 
     pthread_attr_init(&tattr);
     pthread_attr_getschedparam(&tattr, &param);
@@ -21,8 +26,17 @@ threadPoolPriorityServer::threadPoolPriorityServer(int maxThreads)
     param.sched_priority = param.sched_priority - 1;
     pthread_attr_setschedparam(&tattr, &param);
 
-    for (auto &t : mThreads) {
+    for (auto &t : mThreads) 
+    {
         pthread_setschedparam(t.native_handle(), policy, &param);
+        if (pthread_setaffinity_np(t.native_handle(), sizeof(cpu_set_t), &cpuset) != 0) 
+        {
+            cout << endl << "can't set thread CPU core";
+        }
+        else
+            cout << "Set thread to core: " << core << endl;
+    
+        core = (core + 1) % num_cores;
     }
 }
 
@@ -52,8 +66,10 @@ void threadPoolPriorityServer::server_thread()
         int client_fd = wait_for_client();
         if(client_fd != -1)
         {
-            connQueue.push(client_fd);
-            mSignal.notify_one();
+            if(!queue.push_back(client_fd))
+            {
+                cout << endl << "QUEUE IS FULL!! CANNOT ACCEPT ANYMORE REQUESTS......" << endl;
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
 class threadPoolPriorityServer : public threadPoolServer
 {
     public:
-        threadPoolPriorityServer(int maxThreads = 4);
+        threadPoolPriorityServer(int maxThreads = 3);
         ~threadPoolPriorityServer() = default;
 
         void run();

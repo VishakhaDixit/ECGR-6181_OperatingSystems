@@ -1,5 +1,7 @@
 #include "thread_pool_server.hpp"
 
+static int conn_count = 0;
+
 threadPoolServer::threadPoolServer(int maxThreads)
     : server{}
 {
@@ -21,8 +23,7 @@ void threadPoolServer::run()
         int client_fd = wait_for_client();
         if(client_fd != -1)
         {
-            connQueue.push(client_fd);
-            mSignal.notify_one();
+            queue.push_back(client_fd);
         }
     }
 }
@@ -35,29 +36,15 @@ void threadPoolServer::execute_thread(int id)
     cout << endl << "Thread "<< id << ": Spawned"<<endl;
     while (true)
     {
-        std::unique_lock<std::mutex> lk{connLock};
-        cout << "Thread "<< id << ": Sleeping"<<endl;
-        mSignal.wait(lk);
-        cout << "Thread "<< id << ": Woken Up"<<endl;
-
-        if(connQueue.empty())
-        {
-            cout << "Thread "<< id << ": No connections in queue"<<endl;
-            continue;
-        }
-        else
-        {
-            int client_fd = connQueue.front();
-            connQueue.pop();
-            cout << "Thread "<< id << ": Processing Image."<<endl;
-            p = recieve_image(client_fd);
-            std::this_thread::sleep_for(std::chrono::seconds{ 10 });
-            convertedImg = process_image(p.first, p.second - 48);
-            send_image(client_fd, convertedImg);
-            cout << "Thread "<< id << ": Processed Image."<<endl;
-        }
+        int client_fd = queue.front();
+        queue.pop_front();
+        cout <<endl << "Thread "<< id << ": Processing Image."<<endl;
+        p = recieve_image(client_fd);
+        // std::this_thread::sleep_for(std::chrono::seconds{ 10 });
+        convertedImg = process_image(p.first, p.second - 48);
+        send_image(client_fd, convertedImg);
+        cout <<endl << "Thread "<< id << ": Processed Image."<<endl;
     }
-    
 }
 
 void threadPoolServer::create_server_sock(int port)
@@ -98,12 +85,14 @@ int threadPoolServer::wait_for_client()
     int client_fd;
     if((client_fd = accept(server_fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientAddrSize)))
     {
-        cout << std::endl << "Client Connected!" << std::endl;
+        conn_count++;
+        cout << std::endl << "Client " << conn_count << " Connected!" << std::endl;
         return client_fd;
     }
     else
     {
-        cout << "Client Connection Failed!" << std::endl;
+        conn_count++;
+        cout << "Client " << conn_count << " Connection Failed!" << std::endl;
         return -1;
     }
 }

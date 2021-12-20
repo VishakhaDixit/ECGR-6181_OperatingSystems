@@ -1,5 +1,6 @@
 #include "server.hpp"
 #include <condition_variable>
+#include "bounded_queue.hpp"
 
 #define THREAD_POOL_SERVER_PORT 8082
 
@@ -23,14 +24,8 @@ class threadPoolServer : public server
 
         std::vector<std::thread> mThreads;
 
-        //Mutex for getting connection file descriptor
-        std::mutex     connLock;
-
         //Queue to store connection file descriptor for incoming connections
-        std::queue<int> connQueue;
-
-        //Signal to notify sleeping threads of availability of connections
-        std::condition_variable mSignal;
+        SharedQueue queue;
 
         struct sockaddr_in serverAddr, clientAddr;
         int server_fd;
